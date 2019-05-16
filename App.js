@@ -21,12 +21,12 @@ export default class App extends Component {
     var nextValue = (this.state.actual + 1) % maxNumber;
     nextValue = nextValue === 0 & this.state.actual > 0 ? nextValue + maxNumber : nextValue;
     var labelValue = this.state.actual % target;
-    labelValue = labelValue === 0 & this.state.actual > 0 ? labelValue + target : labelValue;    
+    labelValue = labelValue === 0 & this.state.actual > 0 ? labelValue + target : labelValue;
     var backColorTouch = '#e9e9ef';
     if (labelValue === target) {
       Vibration.vibrate(vibratePattern);
       backColorTouch = 'khaki';
-    } else if(labelValue === 0) {
+    } else if (labelValue === 0) {
       backColorTouch = 'palegreen';
     }
     var percentValue = labelValue * 100 / target;
@@ -40,42 +40,14 @@ export default class App extends Component {
               title='Reset'
             />
           </View>
-          <View style={styles.buttonItem1}>
-            <Button onPress={() => { this.setState({ mode: 0 }) }}
-              color={colors[0]}
-              title={modes[0].toString()}
-            />
-          </View>
-          <View style={styles.buttonItem1}>
-            <Button onPress={() => { this.setState({ mode: 1 }) }}
-              color={colors[1]}
-              title={modes[1].toString()}
-            />
-          </View>
-          <View style={styles.buttonItem2}>
-            <Button onPress={() => { this.setState({ mode: 2 }) }}
-              color={colors[2]}
-              title={modes[2].toString()}
-            />
-          </View>
-          <View style={styles.buttonItem2}>
-            <Button onPress={() => { this.setState({ mode: 3 }) }}
-              color={colors[3]}
-              title={modes[3].toString()}
-            />
-          </View>
-          <View style={styles.buttonItem2}>
-            <Button onPress={() => { this.setState({ mode: 4 }) }}
-              color={colors[4]}
-              title={modes[4].toString()}
-            />
-          </View>
-          <View style={styles.buttonItem3}>
-            <Button onPress={() => { this.setState({ mode: 5 }) }}
-              color={colors[5]}
-              title={modes[5].toString()}
-            />
-          </View>
+          {modes.map((item, index) => {
+            return <View key={index} style={buttonStyles[index]}>
+              <Button onPress={() => { this.setState({ mode: index }) }}
+                color={colors[index]}
+                title={item.toString()}
+              />
+            </View>
+          })}
         </View>
         <TouchableOpacity style={styles.touchContainer} onPress={() => { this.setState({ actual: nextValue }) }}>
           <ProgressCircle
@@ -102,11 +74,6 @@ export default class App extends Component {
   }
 }
 
-const colors = ['#0099FF', '#0099CC', '#009999', '#009966', '#009933', '#009900'];
-const colors2 = ['#00FFFF', '#00FFCC', '#00FF99', '#00FF66', '#00FF33', '#00FF00'];
-const modes = [3, 7, 10, 33, 100, 1000]
-const maxNumber = 3000;
-const vibratePattern = [500, 1000, 1500];
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -152,5 +119,12 @@ const styles = StyleSheet.create({
     fontSize: 170
   }
 });
+
+const modes = [3, 7, 10, 33, 100, 1000]
+const colors = ['#0099FF', '#0099CC', '#009999', '#009966', '#009933', '#009900'];
+const colors2 = ['#00FFFF', '#00FFCC', '#00FF99', '#00FF66', '#00FF33', '#00FF00'];
+const buttonStyles = [styles.buttonItem1, styles.buttonItem1, styles.buttonItem2, styles.buttonItem2, styles.buttonItem2, styles.buttonItem3];
+const maxNumber = 3000;
+const vibratePattern = [500, 1000, 1500];
 
 AppRegistry.registerComponent('App', () => App);
