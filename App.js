@@ -1,130 +1,51 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, { Component } from 'react';
-import { AppRegistry, StyleSheet, Button, View, Text, TouchableOpacity, Vibration } from 'react-native';
-import ProgressCircle from 'react-native-progress-circle';
+import { AppRegistry } from 'react-native';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { actual: 0, mode: 3 };
-  }
+import { Counter } from './counter';
+import { HomeScreen } from './home';
 
-  render() {
-    var target = modes[this.state.mode];
-    var nextValue = (this.state.actual + 1) % maxNumber;
-    nextValue = nextValue === 0 & this.state.actual > 0 ? nextValue + maxNumber : nextValue;
-    var labelValue = this.state.actual % target;
-    labelValue = labelValue === 0 & this.state.actual > 0 ? labelValue + target : labelValue;
-    var backColorTouch = '#e9e9ef';
-    if (labelValue === target) {
-      Vibration.vibrate(vibratePattern);
-      backColorTouch = 'khaki';
-    } else if (labelValue === 0) {
-      backColorTouch = 'palegreen';
+const MainStack = createStackNavigator(
+  {
+    Home: {
+      screen: HomeScreen,
+    },
+    Counter: {
+      screen: Counter,
+    },
+  },
+  {
+    initialRouteName: 'Home',
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: '#009966',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
     }
-    var percentValue = labelValue * 100 / target;
+  }
+);
 
-    return (
-      <View style={styles.container}>
-        <View style={styles.buttonContainer}>
-          <View style={styles.buttonItem0}>
-            <Button onPress={() => { this.setState({ actual: 0 }) }}
-              color='crimson'
-              title='Reset'
-            />
-          </View>
-          {modes.map((item, index) => {
-            return <View key={index} style={buttonStyles[index]}>
-              <Button onPress={() => { this.setState({ mode: index }) }}
-                color={colors[index]}
-                title={item.toString()}
-              />
-            </View>
-          })}
-        </View>
-        <TouchableOpacity style={styles.touchContainer} onPress={() => { this.setState({ actual: nextValue }) }}>
-          <ProgressCircle
-            percent={percentValue}
-            radius={170}
-            borderWidth={17}
-            color={colors2[this.state.mode]}
-            shadowColor="#D3D3D3"
-            bgColor={colors[this.state.mode]}
-          >
-            <Text style={styles.bigValue}>{labelValue}</Text>
-          </ProgressCircle>
-        </TouchableOpacity>
-        <View style={styles.infoHeader}>
-          <View>
-            <Text>Target: {target}</Text>
-          </View>
-          <View>
-            <Text>Saat ini: {this.state.actual}</Text>
-          </View>
-        </View>
-      </View>
-    );
+const RootStack = createStackNavigator(
+  {
+    Main: {
+      screen: MainStack,
+    }
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none',
+  }
+);
+
+const AppContainer = createAppContainer(RootStack);
+
+export default class App extends React.Component {
+  render() {
+    return <AppContainer />;
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'stretch',
-    justifyContent: 'space-between',
-    margin: 20
-  },
-  buttonContainer: {
-    margin: 10,
-    flexDirection: 'row',
-    justifyContent: 'center'
-  },
-  buttonItem0: {
-    flex: 5,
-    margin: 1
-  },
-  buttonItem1: {
-    flex: 2,
-    margin: 1
-  },
-  buttonItem2: {
-    flex: 3,
-    margin: 1
-  },
-  buttonItem3: {
-    flex: 4,
-    margin: 1
-  },
-  touchContainer: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center'
-  },
-  infoHeader: {
-    margin: 10,
-    flexDirection: 'row',
-    alignItems: 'stretch',
-    justifyContent: 'space-between'
-  },
-  bigValue: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 170
-  }
-});
-
-const modes = [3, 7, 10, 33, 100, 1000]
-const colors = ['#0099FF', '#0099CC', '#009999', '#009966', '#009933', '#009900'];
-const colors2 = ['#00FFFF', '#00FFCC', '#00FF99', '#00FF66', '#00FF33', '#00FF00'];
-const buttonStyles = [styles.buttonItem1, styles.buttonItem1, styles.buttonItem2, styles.buttonItem2, styles.buttonItem2, styles.buttonItem3];
-const maxNumber = 3000;
-const vibratePattern = [500, 1000, 1500];
 
 AppRegistry.registerComponent('App', () => App);
